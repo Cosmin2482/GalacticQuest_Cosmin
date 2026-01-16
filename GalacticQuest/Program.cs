@@ -5,6 +5,8 @@ namespace GalacticQuest
 {
     internal class Program
     {
+        internal static Player? CurrentPlayer;
+
         static void Main(string[] args)
         {
             Console.WriteLine("Hello, Galactic Quest!");
@@ -39,21 +41,21 @@ namespace GalacticQuest
             Console.Write("\n");
 
             List<(string, int)> items = new List<(string, int)>() { ("Excalibur", 500), ("Tessaiga", 1000) };
-            Player player = new Player(50, 1, items, 10);
+            CurrentPlayer = new Player(50, 1, items, 10);
             //Player player = new Player(50, 1, items);
             //Player player = new Player(40, 2);
             //Player player = new Player(30);
             //Player player = new Player();
 
-            player.ShowProfile();
+            CurrentPlayer.ShowProfile();
 
             (string, int) newItem = ("Dragon Slayer", 1500);
-            player.AddItem(newItem, 6);
+            CurrentPlayer.AddItem(newItem, 6);
 
-            player.ShowProfile();
+            CurrentPlayer.ShowProfile();
 
-            player.UpdateHp(-60);
-            Console.WriteLine($"After updating HP: {player.Hp}");
+            CurrentPlayer.UpdateHp(-60);
+            Console.WriteLine($"After updating HP: {CurrentPlayer.Hp}");
         }
 
         internal static void OpenMainMenu()
@@ -144,7 +146,7 @@ namespace GalacticQuest
                     break;
 
                 case 3:
-                    Console.WriteLine("Selected Items");
+                    OpenBackpackMenu();
                     break;
 
                 case 4:
@@ -154,6 +156,37 @@ namespace GalacticQuest
                     Console.WriteLine("Invalid Option. Please try a valid option.");
                     break;
             }
+        }
+
+        internal static void OpenBackpackMenu()
+        {
+            Console.Write("\n");
+            Console.WriteLine("Backpack - Your Items:");
+
+            if (CurrentPlayer == null)
+            {
+                Console.WriteLine("No player found. Create a player first.");
+                return;
+            }
+
+            if (CurrentPlayer.Items == null || CurrentPlayer.Items.Count == 0)
+            {
+                Console.WriteLine("Your backpack is empty.");
+                Console.Write("\n");
+                Console.WriteLine("Press Enter to go back.");
+                Console.ReadLine();
+                return;
+            }
+
+            for (int index = 0; index < CurrentPlayer.Items.Count; ++index)
+            {
+                var item = CurrentPlayer.Items[index];
+                Console.WriteLine($"{index + 1}. Name: {item.Item1} | Attack: {item.Item2}");
+            }
+
+            Console.Write("\n");
+            Console.WriteLine("Press Enter to go back.");
+            Console.ReadLine();
         }
 
         internal static void CreateAndDisplayMonsters()
